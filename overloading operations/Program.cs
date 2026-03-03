@@ -2,115 +2,86 @@
 
 namespace MatrixCalculator
 {
-  public class SquareMatrix
-  {
-    private double[,] _data;
-    private int _size;
-    private Random _random = new Random();
-
-    public SquareMatrix()
-    {
-      _size = 2;
-      _data = new double[2, 2];
-    }
-
-    public SquareMatrix(int size)
-    {
-      _size = size;
-      _data = new double[size, size];
-    }
-
-    public SquareMatrix(int size, bool randomFill)
-    {
-      _size = size;
-      _data = new double[size, size];
-
-      if (randomFill)
-      {
-        for (int rowIndex = 0; rowIndex < size; ++rowIndex)
-        {
-          for (int columnIndex = 0; columnIndex < size; ++columnIndex)
-          {
-            _data[rowIndex, columnIndex] = _random.Next(-10, 10);
-          }
-        }
-      }
-    }
-
-    public int Size
-    {
-      get { return _size; }
-    }
-
-    public double this[int rowIndex, int columnIndex]
-    {
-      get { return _data[rowIndex, columnIndex]; }
-      set { _data[rowIndex, columnIndex] = value; }
-    }
-
-    public static SquareMatrix operator +(SquareMatrix leftMatrix, SquareMatrix rightMatrix)
-    {
-      if (leftMatrix._size != rightMatrix._size)
-      {
-        throw new Exception("Размеры матриц не совпадают");
-      }
-
-      SquareMatrix resultMatrix = new SquareMatrix(leftMatrix._size);
-
-      for (int rowIndex = 0; rowIndex < leftMatrix._size; ++rowIndex)
-      {
-        for (int columnIndex = 0; columnIndex < leftMatrix._size; ++columnIndex)
-        {
-          resultMatrix[rowIndex, columnIndex] = leftMatrix[rowIndex, columnIndex] + rightMatrix[rowIndex, columnIndex];
-        }
-      }
-
-      return resultMatrix;
-    }
-
-
-    public double Determinant()
-    {
-
-      if (_size == 2)
-      {
-        return _data[0, 0] * _data[1, 1] - _data[0, 1] * _data[1, 0];
-      }
-
-
-      return 0;
-    }
-
-
-  }
-
   class Program
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Введите размер матрицы:");
-      string userInput = Console.ReadLine();
-
-      if (!int.TryParse(userInput, out int matrixSize))
+      try
       {
-        Console.WriteLine("Некорректный ввод. Используем размер 2.");
-        matrixSize = 2;
+        Console.Write("Введите размер матриц: ");
+        string input = Console.ReadLine();
+
+        if (!int.TryParse(input, out int matrixSize) || matrixSize <= 0)
+        {
+          Console.WriteLine("Некорректный размер. Используется размер 2.");
+          matrixSize = 2;
+        }
+
+        SquareMatrix firstMatrix = new SquareMatrix(matrixSize, true);
+        SquareMatrix secondMatrix = new SquareMatrix(matrixSize, true);
+
+        Console.WriteLine("\nМатрица 1:");
+        Console.WriteLine(firstMatrix);
+
+        Console.WriteLine("Матрица 2:");
+        Console.WriteLine(secondMatrix);
+
+        Console.WriteLine("Сложение:");
+        Console.WriteLine(firstMatrix + secondMatrix);
+
+        Console.WriteLine("Умножение:");
+        Console.WriteLine(firstMatrix * secondMatrix);
+
+        Console.WriteLine($"Детерминант матрицы 1: {firstMatrix.Determinant():F4}");
+        Console.WriteLine($"Детерминант матрицы 2: {secondMatrix.Determinant():F4}");
+
+        if (firstMatrix)
+        {
+          Console.WriteLine("Матрица 1 невырожденная");
+        }
+        else
+        {
+          Console.WriteLine("Матрица 1 вырожденная");
+        }
+
+        Console.WriteLine($"Матрица 1 > Матрица 2: {firstMatrix > secondMatrix}");
+        Console.WriteLine($"Матрица 1 < Матрица 2: {firstMatrix < secondMatrix}");
+        Console.WriteLine($"Матрица 1 >= Матрица 2: {firstMatrix >= secondMatrix}");
+        Console.WriteLine($"Матрица 1 <= Матрица 2: {firstMatrix <= secondMatrix}");
+        Console.WriteLine($"Матрица 1 == Матрица 2: {firstMatrix == secondMatrix}");
+        Console.WriteLine($"Матрица 1 != Матрица 2: {firstMatrix != secondMatrix}");
+
+        SquareMatrix clonedMatrix = (SquareMatrix)firstMatrix.Clone();
+        Console.WriteLine("Клон матрицы 1:");
+        Console.WriteLine(clonedMatrix);
+
+        Console.WriteLine($"Оригинал и клон равны: {firstMatrix == clonedMatrix}");
+
+        try
+        {
+          SquareMatrix inverseMatrix = firstMatrix.Inverse();
+          Console.WriteLine("Обратная матрица:");
+          Console.WriteLine(inverseMatrix);
+        }
+        catch (MatrixSingularException exception)
+        {
+          Console.WriteLine(exception.Message);
+        }
+      }
+      catch (MatrixDimensionException exception)
+      {
+        Console.WriteLine($"Ошибка размерности: {exception.Message}");
+      }
+      catch (MatrixSingularException exception)
+      {
+        Console.WriteLine($"Ошибка: {exception.Message}");
+      }
+      catch (Exception exception)
+      {
+        Console.WriteLine($"Неизвестная ошибка: {exception.Message}");
       }
 
-      SquareMatrix firstMatrix = new SquareMatrix(matrixSize, true);
-      SquareMatrix secondMatrix = new SquareMatrix(matrixSize, true);
-
-      Console.WriteLine("Матрица 1:");
-
-
-      Console.WriteLine("Матрица 2:");
-
-
-      Console.WriteLine("Результат сложения:");
-      SquareMatrix sumMatrix = firstMatrix + secondMatrix;
-
-
-
+      Console.ReadKey();
     }
   }
 }
