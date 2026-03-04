@@ -56,7 +56,7 @@ namespace MatrixCalculator
         Console.WriteLine(clonedMatrix);
 
         Console.WriteLine($"Оригинал и клон равны: {firstMatrix == clonedMatrix}");
-
+        
         try
         {
           SquareMatrix inverseMatrix = firstMatrix.Inverse();

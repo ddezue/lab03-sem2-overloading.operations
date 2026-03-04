@@ -144,7 +144,7 @@ namespace MatrixCalculator
       return !(left == right);
     }
 
-    public static explicit operator double[,](SquareMatrix matrix)
+    public static implicit operator double[,](SquareMatrix matrix)
     {
       double[,] result = new double[matrix._size, matrix._size];
 
@@ -291,48 +291,47 @@ namespace MatrixCalculator
       return new SquareMatrix(this);
     }
 
-    public int CompareTo(object obj)
+    int IComparable.CompareTo(object other)
     {
-      if (obj is SquareMatrix other) {
-        double thisDeterminant = Determinant();
-        double otherDeterminant = other.Determinant();
+      if (other is SquareMatrix) {
+        var param = other as SquareMatrix;
+        double thisDeterminant = this.Determinant();
+        double otherDeterminant = param.Determinant();
 
-        if (thisDeterminant < otherDeterminant) {
-          return -1;
-        }
-
-        if (thisDeterminant > otherDeterminant) {
-          return 1;
-        }
-
-        return 0;
+        if (otherDeterminant > thisDeterminant) return -1;
+        if (otherDeterminant == thisDeterminant) return 0;
+        if (otherDeterminant < thisDeterminant) return 1;
       }
-
       return -1;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object other)
     {
-      return obj is SquareMatrix other && this == other;
+      bool result = false;
+      if (other is SquareMatrix) {
+        var param = other as SquareMatrix;
+        if (this == param)
+          result = true;
+      }
+      return result;
     }
 
     public override int GetHashCode()
     {
-      return Determinant().GetHashCode();
+      return (int)this.Determinant();
     }
 
     public override string ToString()
     {
-      string result = string.Empty;
-
-      for (int rowIndex = 0; rowIndex < _size; ++rowIndex) {
-        for (int columnIndex = 0; columnIndex < _size; ++columnIndex) {
+      string result = "";
+      for (int rowIndex = 0; rowIndex < _size; ++rowIndex)
+      {
+        for (int columnIndex = 0; columnIndex < _size; ++columnIndex)
+        {
           result += _data[rowIndex, columnIndex].ToString("F2") + " ";
         }
-
         result += Environment.NewLine;
       }
-
       return result;
     }
   }
