@@ -27,10 +27,15 @@ namespace MatrixCalculator
 
     public SquareMatrix(int size, bool randomFill) : this(size)
     {
+      int minRandomValue;
+      int maxRandomValue;
+      minRandomValue = -10;
+      maxRandomValue = 10;
+
       if (randomFill) {
         for (int rowIndex = 0; rowIndex < size; ++rowIndex) {
           for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
-            _data[rowIndex, columnIndex] = _random.Next(-10, 10);
+            _data[rowIndex, columnIndex] = _random.Next(minRandomValue, maxRandomValue);
           }
         }
       }
@@ -196,7 +201,11 @@ namespace MatrixCalculator
       double sign;
       int subRowIndex;
       double determinant;
-      double[,] submatrix;
+      double[,] subMatrix;
+      int subColumnIndex;
+      int minorSize;
+      minorSize = size - 1;
+      subColumnIndex = 0;
       determinant = 0.0;
       subRowIndex = 0;
 
@@ -208,19 +217,16 @@ namespace MatrixCalculator
         return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
       }
 
-      submatrix = new double[size - 1, size - 1];
+      subMatrix = new double[size - 1, size - 1];
 
       for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
         for (int rowIndex = 1; rowIndex < size; ++rowIndex) {
-          int subColumnIndex;
-          subColumnIndex = 0;
-
           for (int innerColumnIndex = 0; innerColumnIndex < size; ++innerColumnIndex) {
             if (innerColumnIndex == columnIndex) {
               continue;
             }
 
-            submatrix[subRowIndex, subColumnIndex] = matrix[rowIndex, innerColumnIndex];
+            subMatrix[subRowIndex, subColumnIndex] = matrix[rowIndex, innerColumnIndex];
             ++subColumnIndex;
           }
 
@@ -234,7 +240,7 @@ namespace MatrixCalculator
           sign = -1.0;
         }
 
-        determinant += sign * matrix[0, columnIndex] * CalculateDeterminant(submatrix, size - 1);
+        determinant += sign * matrix[0, columnIndex] * CalculateDeterminant(subMatrix, minorSize);
       }
       return determinant;
     }
