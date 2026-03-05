@@ -73,6 +73,9 @@ namespace MatrixCalculator
 
     public static SquareMatrix operator *(SquareMatrix left, SquareMatrix right)
     {
+      double sum;
+      sum = 0.0;
+
       if (left._size != right._size) {
         throw new MatrixDimensionException();
       }
@@ -81,9 +84,6 @@ namespace MatrixCalculator
 
       for (int rowIndex = 0; rowIndex < left._size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < left._size; ++columnIndex) {
-          double sum;
-          sum = 0.0;
-
           for (int innerIndex = 0; innerIndex < left._size; ++innerIndex) {
             sum += left[rowIndex, innerIndex] * right[innerIndex, columnIndex];
           }
@@ -147,7 +147,9 @@ namespace MatrixCalculator
 
     public static implicit operator double[,](SquareMatrix matrix)
     {
-      double[,] result = new double[matrix._size, matrix._size];
+      double[,] result;
+
+      result = new double[matrix._size, matrix._size];
 
       for (int rowIndex = 0; rowIndex < matrix._size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < matrix._size; ++columnIndex) {
@@ -189,6 +191,13 @@ namespace MatrixCalculator
 
     private double CalculateDeterminant(double[,] matrix, int size)
     {
+      double sign;
+      int subRowIndex;
+      double determinant;
+      double[,] submatrix;
+      determinant = 0.0;
+      subRowIndex = 0;
+
       if (size == 1) {
         return matrix[0, 0];
       }
@@ -197,14 +206,9 @@ namespace MatrixCalculator
         return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
       }
 
-      double determinant;
-      determinant = 0.0;
-      double[,] submatrix = new double[size - 1, size - 1];
+      submatrix = new double[size - 1, size - 1];
 
       for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
-        int subRowIndex;
-        subRowIndex = 0;
-
         for (int rowIndex = 1; rowIndex < size; ++rowIndex) {
           int subColumnIndex;
           subColumnIndex = 0;
@@ -221,7 +225,7 @@ namespace MatrixCalculator
           ++subRowIndex;
         }
 
-        double sign = (columnIndex % 2 == 0) ? 1.0 : -1.0;
+        sign = (columnIndex % 2 == 0) ? 1.0 : -1.0;
         determinant += sign * matrix[0, columnIndex] * CalculateDeterminant(submatrix, size - 1);
       }
 
@@ -230,7 +234,12 @@ namespace MatrixCalculator
 
     public SquareMatrix Inverse()
     {
-      double determinant = Determinant();
+      double determinant;
+      double[,] minorMatrix;
+      double minorDeterminant;
+      int sign;
+
+      determinant = Determinant();
 
       if (determinant == 0) {
         throw new MatrixSingularException();
@@ -248,9 +257,9 @@ namespace MatrixCalculator
 
       for (int rowIndex = 0; rowIndex < _size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < _size; ++columnIndex) {
-          double[,] minorMatrix = GetMinorMatrix(_data, rowIndex, columnIndex, _size);
-          double minorDeterminant = CalculateDeterminant(minorMatrix, _size - 1);
-          int sign = ((rowIndex + columnIndex) % 2 == 0) ? 1 : -1;
+          minorMatrix = GetMinorMatrix(_data, rowIndex, columnIndex, _size);
+          minorDeterminant = CalculateDeterminant(minorMatrix, _size - 1);
+          sign = ((rowIndex + columnIndex) % 2 == 0) ? 1 : -1;
           adjugate[columnIndex, rowIndex] = sign * minorDeterminant;
         }
       }
@@ -266,16 +275,18 @@ namespace MatrixCalculator
 
     private double[,] GetMinorMatrix(double[,] matrix, int excludedRow, int excludedColumn, int size)
     {
-      double[,] minor = new double[size - 1, size - 1];
+      double[,] minor;
       int minorRowIndex;
+      int minorColumnIndex;
       minorRowIndex = 0;
+      minorColumnIndex = 0;
+
+      minor = new double[size - 1, size - 1];
 
       for (int rowIndex = 0; rowIndex < size; ++rowIndex) {
         if (rowIndex == excludedRow) {
           continue;
         }
-
-        int minorColumnIndex = 0;
 
         for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
           if (columnIndex == excludedColumn) {
@@ -299,10 +310,13 @@ namespace MatrixCalculator
 
     int IComparable.CompareTo(object other)
     {
+      double thisDeterminant;
+      double otherDeterminant;
+
       if (other is SquareMatrix) {
         var param = other as SquareMatrix;
-        double thisDeterminant = this.Determinant();
-        double otherDeterminant = param.Determinant();
+        thisDeterminant = this.Determinant();
+        otherDeterminant = param.Determinant();
 
         if (otherDeterminant > thisDeterminant) return -1;
         if (otherDeterminant == thisDeterminant) return 0;
@@ -313,7 +327,9 @@ namespace MatrixCalculator
 
     public override bool Equals(object other)
     {
-      bool result = false;
+      bool result;
+
+      result = false;
       if (other is SquareMatrix) {
         var param = other as SquareMatrix;
         if (this == param)
@@ -330,10 +346,8 @@ namespace MatrixCalculator
     public override string ToString()
     {
       string result = "";
-      for (int rowIndex = 0; rowIndex < _size; ++rowIndex)
-      {
-        for (int columnIndex = 0; columnIndex < _size; ++columnIndex)
-        {
+      for (int rowIndex = 0; rowIndex < _size; ++rowIndex) {
+        for (int columnIndex = 0; columnIndex < _size; ++columnIndex) {
           result += _data[rowIndex, columnIndex].ToString("F2") + " ";
         }
         result += Environment.NewLine;
