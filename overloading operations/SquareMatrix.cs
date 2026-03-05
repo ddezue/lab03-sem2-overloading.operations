@@ -81,7 +81,8 @@ namespace MatrixCalculator
 
       for (int rowIndex = 0; rowIndex < left._size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < left._size; ++columnIndex) {
-          double sum = 0.0;
+          double sum;
+          sum = 0.0;
 
           for (int innerIndex = 0; innerIndex < left._size; ++innerIndex) {
             sum += left[rowIndex, innerIndex] * right[innerIndex, columnIndex];
@@ -196,14 +197,17 @@ namespace MatrixCalculator
         return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
       }
 
-      double determinant = 0.0;
+      double determinant;
+      determinant = 0.0;
       double[,] submatrix = new double[size - 1, size - 1];
 
       for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
-        int subRowIndex = 0;
+        int subRowIndex;
+        subRowIndex = 0;
 
         for (int rowIndex = 1; rowIndex < size; ++rowIndex) {
-          int subColumnIndex = 0;
+          int subColumnIndex;
+          subColumnIndex = 0;
 
           for (int innerColumnIndex = 0; innerColumnIndex < size; ++innerColumnIndex) {
             if (innerColumnIndex == columnIndex) {
@@ -235,6 +239,7 @@ namespace MatrixCalculator
       if (_size == 1) {
         SquareMatrix result = new SquareMatrix(1);
         result[0, 0] = 1.0 / _data[0, 0];
+
         return result;
       }
 
@@ -262,7 +267,8 @@ namespace MatrixCalculator
     private double[,] GetMinorMatrix(double[,] matrix, int excludedRow, int excludedColumn, int size)
     {
       double[,] minor = new double[size - 1, size - 1];
-      int minorRowIndex = 0;
+      int minorRowIndex;
+      minorRowIndex = 0;
 
       for (int rowIndex = 0; rowIndex < size; ++rowIndex) {
         if (rowIndex == excludedRow) {
