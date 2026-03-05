@@ -162,7 +162,9 @@ namespace MatrixCalculator
 
     public static implicit operator SquareMatrix(double[,] array)
     {
-      int size = array.GetLength(0);
+      int size;
+
+      size = array.GetLength(0);
       SquareMatrix result = new SquareMatrix(size);
 
       for (int rowIndex = 0; rowIndex < size; ++rowIndex) {
@@ -225,19 +227,26 @@ namespace MatrixCalculator
           ++subRowIndex;
         }
 
-        sign = (columnIndex % 2 == 0) ? 1.0 : -1.0;
+        if (columnIndex % 2 == 0) {
+          sign = 1.0;
+        }
+        else {
+          sign = -1.0;
+        }
+
         determinant += sign * matrix[0, columnIndex] * CalculateDeterminant(submatrix, size - 1);
       }
-
       return determinant;
     }
 
     public SquareMatrix Inverse()
     {
+      int minorSize;
       double determinant;
       double[,] minorMatrix;
       double minorDeterminant;
       int sign;
+      minorSize = _size - 1;
 
       determinant = Determinant();
 
@@ -258,8 +267,13 @@ namespace MatrixCalculator
       for (int rowIndex = 0; rowIndex < _size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < _size; ++columnIndex) {
           minorMatrix = GetMinorMatrix(_data, rowIndex, columnIndex, _size);
-          minorDeterminant = CalculateDeterminant(minorMatrix, _size - 1);
-          sign = ((rowIndex + columnIndex) % 2 == 0) ? 1 : -1;
+          minorDeterminant = CalculateDeterminant(minorMatrix, minorSize);
+          if ((rowIndex + columnIndex) % 2 == 0) {
+            sign = 1;
+          }
+          else {
+            sign = -1;
+          }
           adjugate[columnIndex, rowIndex] = sign * minorDeterminant;
         }
       }
@@ -275,13 +289,15 @@ namespace MatrixCalculator
 
     private double[,] GetMinorMatrix(double[,] matrix, int excludedRow, int excludedColumn, int size)
     {
+      int minorSize;
       double[,] minor;
       int minorRowIndex;
       int minorColumnIndex;
       minorRowIndex = 0;
       minorColumnIndex = 0;
+      minorSize = _size - 1;
 
-      minor = new double[size - 1, size - 1];
+      minor = new double[minorSize, minorSize];
 
       for (int rowIndex = 0; rowIndex < size; ++rowIndex) {
         if (rowIndex == excludedRow) {
@@ -314,7 +330,7 @@ namespace MatrixCalculator
       double otherDeterminant;
 
       if (other is SquareMatrix) {
-        var param = other as SquareMatrix;
+        SquareMatrix param = other as SquareMatrix;
         thisDeterminant = this.Determinant();
         otherDeterminant = param.Determinant();
 
@@ -331,9 +347,10 @@ namespace MatrixCalculator
 
       result = false;
       if (other is SquareMatrix) {
-        var param = other as SquareMatrix;
-        if (this == param)
+        SquareMatrix param = other as SquareMatrix;
+        if (this == param) {
           result = true;
+        }
       }
       return result;
     }
@@ -345,7 +362,9 @@ namespace MatrixCalculator
 
     public override string ToString()
     {
-      string result = "";
+      string result;
+      result = "";
+
       for (int rowIndex = 0; rowIndex < _size; ++rowIndex) {
         for (int columnIndex = 0; columnIndex < _size; ++columnIndex) {
           result += _data[rowIndex, columnIndex].ToString("F2") + " ";

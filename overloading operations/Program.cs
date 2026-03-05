@@ -4,63 +4,62 @@ namespace MatrixCalculator
 {
   class Program
   {
-    static void Main(string[] args)
+    static void Main()
     {
+      string input;
+
       try
       {
-        Console.Write("Введите размер матриц: ");
-        string input = Console.ReadLine();
+        Console.Write("Enter matrix size: ");
+        input = Console.ReadLine();
 
-        if (!int.TryParse(input, out int matrixSize) || matrixSize <= 0)
-        {
-          Console.WriteLine("Некорректный размер. Используется размер 2.");
+        if (!int.TryParse(input, out int matrixSize) || matrixSize <= 0) {
+          Console.WriteLine("Invalid size. Using size 2.");
           matrixSize = 2;
         }
 
         SquareMatrix firstMatrix = new SquareMatrix(matrixSize, true);
         SquareMatrix secondMatrix = new SquareMatrix(matrixSize, true);
 
-        Console.WriteLine("\nМатрица 1:");
+        Console.WriteLine("\nMatrix 1:");
         Console.WriteLine(firstMatrix);
 
-        Console.WriteLine("Матрица 2:");
+        Console.WriteLine("Matrix 2:");
         Console.WriteLine(secondMatrix);
 
-        Console.WriteLine("Сложение:");
+        Console.WriteLine("Addition:");
         Console.WriteLine(firstMatrix + secondMatrix);
 
-        Console.WriteLine("Умножение:");
+        Console.WriteLine("Multiplication:");
         Console.WriteLine(firstMatrix * secondMatrix);
 
-        Console.WriteLine($"Детерминант матрицы 1: {firstMatrix.Determinant():F4}");
-        Console.WriteLine($"Детерминант матрицы 2: {secondMatrix.Determinant():F4}");
+        Console.WriteLine($"Determinant of matrix 1: {firstMatrix.Determinant():F4}");
+        Console.WriteLine($"Determinant of matrix 2: {secondMatrix.Determinant():F4}");
 
-        if (firstMatrix)
-        {
-          Console.WriteLine("Матрица 1 невырожденная");
+        if (firstMatrix) {
+          Console.WriteLine("Matrix 1 is non-singular");
         }
-        else
-        {
-          Console.WriteLine("Матрица 1 вырожденная");
+        else {
+          Console.WriteLine("Matrix 1 is singular");
         }
 
-        Console.WriteLine($"Матрица 1 > Матрица 2: {firstMatrix > secondMatrix}");
-        Console.WriteLine($"Матрица 1 < Матрица 2: {firstMatrix < secondMatrix}");
-        Console.WriteLine($"Матрица 1 >= Матрица 2: {firstMatrix >= secondMatrix}");
-        Console.WriteLine($"Матрица 1 <= Матрица 2: {firstMatrix <= secondMatrix}");
-        Console.WriteLine($"Матрица 1 == Матрица 2: {firstMatrix == secondMatrix}");
-        Console.WriteLine($"Матрица 1 != Матрица 2: {firstMatrix != secondMatrix}");
+        Console.WriteLine($"Matrix 1 > Matrix 2: {firstMatrix > secondMatrix}");
+        Console.WriteLine($"Matrix 1 < Matrix 2: {firstMatrix < secondMatrix}");
+        Console.WriteLine($"Matrix 1 >= Matrix 2: {firstMatrix >= secondMatrix}");
+        Console.WriteLine($"Matrix 1 <= Matrix 2: {firstMatrix <= secondMatrix}");
+        Console.WriteLine($"Matrix 1 == Matrix 2: {firstMatrix == secondMatrix}");
+        Console.WriteLine($"Matrix 1 != Matrix 2: {firstMatrix != secondMatrix}");
 
         SquareMatrix clonedMatrix = (SquareMatrix)firstMatrix.Clone();
-        Console.WriteLine("Клон матрицы 1:");
+        Console.WriteLine("Clone of matrix 1:");
         Console.WriteLine(clonedMatrix);
 
-        Console.WriteLine($"Оригинал и клон равны: {firstMatrix == clonedMatrix}");
-        
+        Console.WriteLine($"Original and clone are equal: {firstMatrix == clonedMatrix}");
+
         try
         {
           SquareMatrix inverseMatrix = firstMatrix.Inverse();
-          Console.WriteLine("Обратная матрица:");
+          Console.WriteLine("Inverse matrix:");
           Console.WriteLine(inverseMatrix);
         }
         catch (MatrixSingularException exception)
@@ -70,15 +69,15 @@ namespace MatrixCalculator
       }
       catch (MatrixDimensionException exception)
       {
-        Console.WriteLine($"Ошибка размерности: {exception.Message}");
+        Console.WriteLine($"Dimension error: {exception.Message}");
       }
       catch (MatrixSingularException exception)
       {
-        Console.WriteLine($"Ошибка: {exception.Message}");
+        Console.WriteLine($"Error: {exception.Message}");
       }
       catch (Exception exception)
       {
-        Console.WriteLine($"Неизвестная ошибка: {exception.Message}");
+        Console.WriteLine($"Unknown error: {exception.Message}");
       }
 
       Console.ReadKey();

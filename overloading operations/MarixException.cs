@@ -10,11 +10,11 @@ namespace MatrixCalculator
 
   public class MatrixDimensionException : MatrixException
   {
-    public MatrixDimensionException() : base("Ошибка: несовпадение размерностей матриц") { }
+    public MatrixDimensionException() : base("Error: matrix dimensions do not match") { }
   }
 
   public class MatrixSingularException : MatrixException
   {
-    public MatrixSingularException() : base("Ошибка: матрица вырождена") { }
+    public MatrixSingularException() : base("Error: matrix is singular") { }
   }
 }
