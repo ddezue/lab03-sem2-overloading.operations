@@ -217,7 +217,7 @@ namespace MatrixCalculator
         return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
       }
 
-      subMatrix = new double[size - 1, size - 1];
+      subMatrix = new double[minorSize, minorSize];
 
       for (int columnIndex = 0; columnIndex < size; ++columnIndex) {
         for (int rowIndex = 1; rowIndex < size; ++rowIndex) {
@@ -340,9 +340,15 @@ namespace MatrixCalculator
         thisDeterminant = this.Determinant();
         otherDeterminant = param.Determinant();
 
-        if (otherDeterminant > thisDeterminant) return -1;
-        if (otherDeterminant == thisDeterminant) return 0;
-        if (otherDeterminant < thisDeterminant) return 1;
+        if (otherDeterminant > thisDeterminant) {
+          return -1;
+        }
+        if (otherDeterminant == thisDeterminant) {
+          return 0;
+        }
+        if (otherDeterminant < thisDeterminant) {
+          return 1;
+        }
       }
       return -1;
     }
